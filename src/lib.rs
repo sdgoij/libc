@@ -219,6 +219,9 @@
 
 #[macro_use]
 mod macros;
+// MINIX has its own C library, so it does not use libc's `new` header tree (it
+// has no minix family to dispatch to, and its layouts are other libcs').
+#[cfg(not(target_os = "minix"))]
 mod new;
 
 cfg_if! {
@@ -229,6 +232,7 @@ cfg_if! {
 
 pub use core::ffi::c_void;
 
+#[cfg(not(target_os = "minix"))]
 #[allow(unused_imports)] // needed while the module is empty on some platforms
 pub use new::*;
 
@@ -279,6 +283,14 @@ cfg_if! {
 
         mod solid;
         pub use crate::solid::*;
+
+        prelude!();
+    } else if #[cfg(target_os = "minix")] {
+        mod primitives;
+        pub use crate::primitives::*;
+
+        mod minix;
+        pub use crate::minix::*;
 
         prelude!();
     } else if #[cfg(unix)] {
