@@ -19,6 +19,7 @@ mod io;
 mod mman;
 mod net;
 mod process;
+mod stdio;
 mod time;
 mod types;
 
@@ -30,5 +31,6 @@ pub use io::*;
 pub use mman::*;
 pub use net::*;
 pub use process::*;
+pub use stdio::*;
 pub use time::*;
 pub use types::*;
