@@ -195,6 +195,70 @@ pub const fn WIFCONTINUED(_status: c_int) -> bool {
     false
 }
 
+// ---- waitid ----
+
+/// `WEXITED`
+pub const WEXITED: c_int = 0x04;
+/// `WSTOPPED`
+pub const WSTOPPED: c_int = 0x02;
+/// `WNOWAIT`
+pub const WNOWAIT: c_int = 0x0100_0000;
+
+/// `P_ALL`
+pub const P_ALL: c_int = 0;
+/// `P_PID`
+pub const P_PID: c_int = 1;
+/// `P_PGID`
+pub const P_PGID: c_int = 2;
+
+/// `CLD_EXITED`
+pub const CLD_EXITED: c_int = 1;
+/// `CLD_KILLED`
+pub const CLD_KILLED: c_int = 2;
+/// `CLD_DUMPED`
+pub const CLD_DUMPED: c_int = 3;
+/// `CLD_TRAPPED`
+pub const CLD_TRAPPED: c_int = 4;
+/// `CLD_STOPPED`
+pub const CLD_STOPPED: c_int = 5;
+/// `CLD_CONTINUED`
+pub const CLD_CONTINUED: c_int = 6;
+
+/// `siginfo_t` — the `waitid` result.
+///
+/// The header's trailing union is 8-byte aligned because `si_addr` is a
+/// pointer, so the SIGCHLD member `waitid` fills starts at offset 16; the
+/// padding fields reproduce that layout.
+#[repr(C, align(8))]
+#[derive(Clone, Copy)]
+pub struct siginfo_t {
+    pub si_signo: c_int,
+    pub si_errno: c_int,
+    pub si_code: c_int,
+    _union_align: c_int,
+    pub si_pid: pid_t,
+    pub si_uid: uid_t,
+    pub si_status: c_int,
+    _union_tail: c_int,
+}
+
+impl siginfo_t {
+    /// `si_status` — for `waitid`, the exit code, or the signal that killed the
+    /// child.
+    ///
+    /// # Safety
+    ///
+    /// POSIX makes `si_status` meaningful only in a `siginfo_t` that a
+    /// successful `waitid` filled.
+    pub unsafe fn si_status(&self) -> c_int {
+        self.si_status
+    }
+}
+
+unsafe extern "C" {
+    pub fn waitid(idtype: c_int, id: c_int, infop: *mut siginfo_t, options: c_int) -> c_int;
+}
+
 // ---- signals ----
 
 /// `sigset_t` (`signal.h`: `unsigned long[2]`)
