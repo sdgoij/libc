@@ -20,6 +20,10 @@ pub const STDOUT_FILENO: c_int = 1;
 /// `STDERR_FILENO`
 pub const STDERR_FILENO: c_int = 2;
 
+/// `_SC_CLK_TCK`
+pub const _SC_CLK_TCK: c_int = 2;
+/// `_SC_PAGESIZE`
+pub const _SC_PAGESIZE: c_int = 30;
 /// `_SC_HOST_NAME_MAX`
 pub const _SC_HOST_NAME_MAX: c_int = 180;
 
@@ -56,6 +60,13 @@ unsafe extern "C" {
     pub fn setgroups(size: size_t, list: *const gid_t) -> c_int;
     pub fn getgroups(size: c_int, list: *mut gid_t) -> c_int;
     pub fn chdir(path: *const c_char) -> c_int;
+    pub fn fchdir(fd: c_int) -> c_int;
+    pub fn getcwd(buf: *mut c_char, size: size_t) -> *mut c_char;
+    pub fn umask(mask: crate::mode_t) -> crate::mode_t;
+    pub fn getsid(pid: pid_t) -> pid_t;
+    pub fn getpgrp() -> pid_t;
+    pub fn getpgid(pid: pid_t) -> pid_t;
+    pub fn nice(inc: c_int) -> c_int;
     pub fn chroot(path: *const c_char) -> c_int;
     pub fn lchown(path: *const c_char, owner: uid_t, group: gid_t) -> c_int;
     pub fn mkfifo(path: *const c_char, mode: crate::mode_t) -> c_int;
@@ -64,6 +75,69 @@ unsafe extern "C" {
     pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
     pub fn sysconf(name: c_int) -> c_long;
     pub fn strnlen(s: *const c_char, maxlen: size_t) -> size_t;
+}
+
+// ---- sys/resource.h ----
+
+/// `rlim_t`
+pub type rlim_t = c_ulong;
+
+/// `RLIM_INFINITY`
+pub const RLIM_INFINITY: rlim_t = rlim_t::MAX;
+
+/// `RLIMIT_CPU`
+pub const RLIMIT_CPU: c_int = 0;
+/// `RLIMIT_FSIZE`
+pub const RLIMIT_FSIZE: c_int = 1;
+/// `RLIMIT_DATA`
+pub const RLIMIT_DATA: c_int = 2;
+/// `RLIMIT_STACK`
+pub const RLIMIT_STACK: c_int = 3;
+/// `RLIMIT_CORE`
+pub const RLIMIT_CORE: c_int = 4;
+/// `RLIMIT_RSS`
+pub const RLIMIT_RSS: c_int = 5;
+/// `RLIMIT_NPROC`
+pub const RLIMIT_NPROC: c_int = 6;
+/// `RLIMIT_NOFILE`
+pub const RLIMIT_NOFILE: c_int = 7;
+/// `RLIMIT_MEMLOCK`
+pub const RLIMIT_MEMLOCK: c_int = 8;
+/// `RLIMIT_AS`
+pub const RLIMIT_AS: c_int = 9;
+/// `RLIMIT_LOCKS`
+pub const RLIMIT_LOCKS: c_int = 10;
+/// `RLIMIT_SIGPENDING`
+pub const RLIMIT_SIGPENDING: c_int = 11;
+/// `RLIMIT_MSGQUEUE`
+pub const RLIMIT_MSGQUEUE: c_int = 12;
+/// `RLIMIT_NICE`
+pub const RLIMIT_NICE: c_int = 13;
+/// `RLIMIT_RTPRIO`
+pub const RLIMIT_RTPRIO: c_int = 14;
+/// `RLIMIT_RTTIME`
+pub const RLIMIT_RTTIME: c_int = 15;
+
+/// `struct rlimit`
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct rlimit {
+    pub rlim_cur: rlim_t,
+    pub rlim_max: rlim_t,
+}
+
+/// `PRIO_PROCESS`
+pub const PRIO_PROCESS: c_int = 0;
+/// `PRIO_PGRP`
+pub const PRIO_PGRP: c_int = 1;
+/// `PRIO_USER`
+pub const PRIO_USER: c_int = 2;
+
+unsafe extern "C" {
+    pub fn getrlimit(resource: c_int, rlim: *mut rlimit) -> c_int;
+    pub fn setrlimit(resource: c_int, rlim: *const rlimit) -> c_int;
+    pub fn getpriority(which: c_int, who: c_int) -> c_int;
+    pub fn setpriority(which: c_int, who: c_int, prio: c_int) -> c_int;
 }
 
 // ---- wait status ----
