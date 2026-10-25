@@ -12,6 +12,11 @@ use crate::{
     pid_t, pollfd, size_t, ssize_t, timespec, uid_t, DIR,
 };
 
+/// `TIOCSCTTY` — become the controlling terminal (`_IO('t', 37)`, NetBSD's
+/// number, which the port's ioctl encoding preserves). The tty server does not
+/// act on it yet; the constant exists for the consumers that name the request.
+pub const TIOCSCTTY: c_ulong = 0x7425;
+
 unsafe extern "C" {
     pub fn open(path: *const c_char, flags: c_int, ...) -> c_int;
     pub fn openat(dirfd: c_int, path: *const c_char, flags: c_int, ...) -> c_int;
