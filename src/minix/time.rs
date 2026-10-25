@@ -50,3 +50,29 @@ unsafe extern "C" {
     pub fn clock_getres(clockid: clockid_t, res: *mut timespec) -> c_int;
     pub fn nanosleep(req: *const timespec, rem: *mut timespec) -> c_int;
 }
+
+// ---- timerfd(3) (`sys/timerfd.h`) ----
+
+/// `struct itimerspec` — the period and the next expiry of a timer.
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct itimerspec {
+    pub it_interval: timespec,
+    pub it_value: timespec,
+}
+
+pub const TFD_CLOEXEC: c_int = crate::O_CLOEXEC;
+pub const TFD_NONBLOCK: c_int = crate::O_NONBLOCK;
+/// `it_value` is an absolute time on the timer's clock.
+pub const TFD_TIMER_ABSTIME: c_int = 1;
+
+unsafe extern "C" {
+    pub fn timerfd_create(clockid: c_int, flags: c_int) -> c_int;
+    pub fn timerfd_settime(
+        fd: c_int,
+        flags: c_int,
+        new_value: *const itimerspec,
+        old_value: *mut itimerspec,
+    ) -> c_int;
+    pub fn timerfd_gettime(fd: c_int, curr_value: *mut itimerspec) -> c_int;
+}

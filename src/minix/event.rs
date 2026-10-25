@@ -1,7 +1,7 @@
 //! `poll` types and flags (`tools/c-include/poll.h`, `sys/ioctl.h`).
 
 use crate::prelude::*;
-use crate::{c_int, c_short, c_uint, c_ulong, O_CLOEXEC};
+use crate::{c_int, c_short, c_uint, c_ulong, O_CLOEXEC, O_NONBLOCK};
 
 /// `struct pollfd`
 #[repr(C)]
@@ -80,4 +80,20 @@ unsafe extern "C" {
         maxevents: c_int,
         timeout: c_int,
     ) -> c_int;
+}
+
+// ---- eventfd(3) (`sys/eventfd.h`) ----
+
+/// `eventfd_t` — the counter `read`/`write` move 8 bytes at a time.
+pub type eventfd_t = u64;
+
+/// Read returns 1 and decrements the counter instead of returning it whole.
+pub const EFD_SEMAPHORE: c_int = 1;
+pub const EFD_CLOEXEC: c_int = O_CLOEXEC;
+pub const EFD_NONBLOCK: c_int = O_NONBLOCK;
+
+unsafe extern "C" {
+    pub fn eventfd(initval: c_uint, flags: c_int) -> c_int;
+    pub fn eventfd_read(fd: c_int, value: *mut eventfd_t) -> c_int;
+    pub fn eventfd_write(fd: c_int, value: eventfd_t) -> c_int;
 }
