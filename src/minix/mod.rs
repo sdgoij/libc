@@ -3,7 +3,7 @@
 //! MINIX is a Unix with its own C library (`crates/minix-libc` in the minixrs
 //! tree), so it does not inherit another libc's headers. These declarations
 //! mirror the port's own headers (`tools/c-include/`) and are what the crates
-//! this fork exists for — `rustix`, and through it `calloop` and `smithay` —
+//! this fork exists for â€” `rustix`, and through it `calloop` and `smithay` â€”
 //! name at compile time.
 //!
 //! The crate root selects this module *before* its `new`/`unix` trees, whose

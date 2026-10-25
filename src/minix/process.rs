@@ -224,11 +224,11 @@ pub const CLD_STOPPED: c_int = 5;
 /// `CLD_CONTINUED`
 pub const CLD_CONTINUED: c_int = 6;
 
-/// `siginfo_t` — the `waitid` result.
+/// `siginfo_t` — the `waitid` result and a signal handler's `info`.
 ///
 /// The header's trailing union is 8-byte aligned because `si_addr` is a
-/// pointer, so the SIGCHLD member `waitid` fills starts at offset 16; the
-/// padding fields reproduce that layout.
+/// pointer, so it starts at offset 16; the SIGCHLD members `waitid` fills
+/// overlap the same bytes, and `si_status` (offset 24) follows both.
 #[repr(C, align(8))]
 #[derive(Clone, Copy)]
 pub struct siginfo_t {
@@ -236,8 +236,10 @@ pub struct siginfo_t {
     pub si_errno: c_int,
     pub si_code: c_int,
     _union_align: c_int,
-    pub si_pid: pid_t,
-    pub si_uid: uid_t,
+    /// The union's pointer member: the faulting address a signal handler sees.
+    pub si_addr: *mut c_void,
+    /// The union's `si_status` member: the exit code, or the signal that killed
+    /// the child.
     pub si_status: c_int,
     _union_tail: c_int,
 }
@@ -307,11 +309,28 @@ pub const SIGPROF: c_int = 27;
 pub const SIGIO: c_int = 29;
 pub const SIGPWR: c_int = 30;
 
+/// Signal disposition flags. The kernel does not interpret them yet.
+pub const SA_SIGINFO: c_int = 0x0000_0004;
+pub const SA_NODEFER: c_int = 0x4000_0000;
+
+/// `struct sigaction` (`signal.h`): the handler address, the mask, the flags,
+/// then the restorer. `minix-libc` reads the first 28 bytes.
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct sigaction {
+    pub sa_sigaction: sighandler_t,
+    pub sa_mask: sigset_t,
+    pub sa_flags: c_int,
+    pub sa_restorer: usize,
+}
+
 unsafe extern "C" {
     pub fn sigemptyset(set: *mut sigset_t) -> c_int;
     pub fn sigaddset(set: *mut sigset_t, signum: c_int) -> c_int;
     pub fn sigdelset(set: *mut sigset_t, signum: c_int) -> c_int;
     pub fn sigismember(set: *const sigset_t, signum: c_int) -> c_int;
+    pub fn sigaction(signum: c_int, act: *const sigaction, oldact: *mut sigaction) -> c_int;
+    pub fn raise(sig: c_int) -> c_int;
 }
 
 // ---- threads ----
