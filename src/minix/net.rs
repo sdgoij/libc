@@ -134,19 +134,19 @@ pub const fn CMSG_ALIGN(len: socklen_t) -> socklen_t {
 ///
 /// `cmsg` must point to a `cmsghdr` inside a buffer sized by `CMSG_SPACE`.
 #[inline]
-pub unsafe fn CMSG_DATA(cmsg: *mut cmsghdr) -> *mut u8 {
+pub unsafe fn CMSG_DATA(cmsg: *const cmsghdr) -> *mut u8 {
     (cmsg as *mut u8).add(CMSG_ALIGN(size_of::<cmsghdr>() as socklen_t) as usize)
 }
 
 /// `CMSG_SPACE`
 #[inline]
-pub const fn CMSG_SPACE(len: socklen_t) -> socklen_t {
+pub const unsafe fn CMSG_SPACE(len: socklen_t) -> socklen_t {
     CMSG_ALIGN(size_of::<cmsghdr>() as socklen_t) + CMSG_ALIGN(len)
 }
 
 /// `CMSG_LEN`
 #[inline]
-pub const fn CMSG_LEN(len: socklen_t) -> socklen_t {
+pub const unsafe fn CMSG_LEN(len: socklen_t) -> socklen_t {
     CMSG_ALIGN(size_of::<cmsghdr>() as socklen_t) + len
 }
 
@@ -340,6 +340,7 @@ unsafe extern "C" {
     pub fn connect(fd: c_int, addr: *const sockaddr, len: socklen_t) -> c_int;
     pub fn listen(fd: c_int, backlog: c_int) -> c_int;
     pub fn accept(fd: c_int, addr: *mut sockaddr, len: *mut socklen_t) -> c_int;
+    pub fn accept4(fd: c_int, addr: *mut sockaddr, len: *mut socklen_t, flags: c_int) -> c_int;
     pub fn shutdown(fd: c_int, how: c_int) -> c_int;
     pub fn setsockopt(
         fd: c_int,
@@ -347,6 +348,13 @@ unsafe extern "C" {
         name: c_int,
         value: *const c_void,
         len: socklen_t,
+    ) -> c_int;
+    pub fn getsockopt(
+        fd: c_int,
+        level: c_int,
+        name: c_int,
+        value: *mut c_void,
+        len: *mut socklen_t,
     ) -> c_int;
     pub fn send(fd: c_int, buf: *const c_void, len: size_t, flags: c_int) -> ssize_t;
     pub fn recv(fd: c_int, buf: *mut c_void, len: size_t, flags: c_int) -> ssize_t;
