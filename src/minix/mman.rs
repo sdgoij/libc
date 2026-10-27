@@ -19,6 +19,9 @@ pub const MAP_PRIVATE: c_int = 0x02;
 pub const MAP_SHARED_VALIDATE: c_int = 0x03;
 pub const MAP_FIXED: c_int = 0x10;
 pub const MAP_ANONYMOUS: c_int = 0x20;
+/// The BSD spelling of [`MAP_ANONYMOUS`], which `memmap2` and the crates that
+/// follow it name.
+pub const MAP_ANON: c_int = MAP_ANONYMOUS;
 pub const MAP_GROWSDOWN: c_int = 0x0100;
 pub const MAP_DENYWRITE: c_int = 0x0800;
 pub const MAP_LOCKED: c_int = 0x2000;
@@ -46,6 +49,12 @@ pub const POSIX_MADV_SEQUENTIAL: c_int = 2;
 pub const POSIX_MADV_WILLNEED: c_int = 3;
 pub const POSIX_MADV_DONTNEED: c_int = 4;
 
+pub const MADV_NORMAL: c_int = 0;
+pub const MADV_RANDOM: c_int = 1;
+pub const MADV_SEQUENTIAL: c_int = 2;
+pub const MADV_WILLNEED: c_int = 3;
+pub const MADV_DONTNEED: c_int = 4;
+
 unsafe extern "C" {
     pub fn mmap(
         addr: *mut c_void,
@@ -58,6 +67,7 @@ unsafe extern "C" {
     pub fn munmap(addr: *mut c_void, length: size_t) -> c_int;
     pub fn mprotect(addr: *mut c_void, length: size_t, prot: c_int) -> c_int;
     pub fn msync(addr: *mut c_void, length: size_t, flags: c_int) -> c_int;
+    pub fn madvise(addr: *mut c_void, length: size_t, advice: c_int) -> c_int;
     pub fn mlock(addr: *const c_void, length: size_t) -> c_int;
     pub fn munlock(addr: *const c_void, length: size_t) -> c_int;
     pub fn posix_madvise(addr: *mut c_void, length: size_t, advice: c_int) -> c_int;

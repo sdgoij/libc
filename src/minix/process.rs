@@ -75,6 +75,9 @@ unsafe extern "C" {
     pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
     pub fn sysconf(name: c_int) -> c_long;
     pub fn strnlen(s: *const c_char, maxlen: size_t) -> size_t;
+    pub fn strlen(s: *const c_char) -> size_t;
+    /// POSIX 2008 form: 0 on success, `ERANGE` when the message was truncated.
+    pub fn strerror_r(errnum: c_int, buf: *mut c_char, buflen: size_t) -> c_int;
 }
 
 // ---- sys/resource.h ----
@@ -366,4 +369,11 @@ unsafe extern "C" {
     pub fn pthread_setspecific(key: pthread_key_t, value: *const c_void) -> c_int;
     pub fn pthread_getspecific(key: pthread_key_t) -> *mut c_void;
     pub fn pthread_self() -> pthread_t;
+    /// POSIX `pthread_atfork()`: the handlers `fork()` runs before and after the
+    /// split, which is what `rand`'s fork counter registers.
+    pub fn pthread_atfork(
+        prepare: Option<unsafe extern "C" fn()>,
+        parent: Option<unsafe extern "C" fn()>,
+        child: Option<unsafe extern "C" fn()>,
+    ) -> c_int;
 }
