@@ -208,6 +208,12 @@
 #![allow(edition_2024_expr_fragment_specifier)]
 // Allowed globally, the warning is enabled in individual modules as we work through them
 #![allow(unsafe_op_in_unsafe_fn)]
+// This fork is compiled inside the toolchain's own build (`.notes/wayland.md` 6.13),
+// where the stage0 compiler predates the minix target spec: every
+// `target_os = "minix"` arm is then an "unexpected cfg value", and the extra `mod
+// minix` tree makes two upstream re-exports look unreachable to `unreachable_pub`.
+// Both are artefacts of building the fork there, not of the arms themselves.
+#![allow(unexpected_cfgs, unreachable_pub)]
 #![cfg_attr(libc_deny_warnings, deny(warnings))]
 // Attributes needed when building as part of the standard library
 #![cfg_attr(feature = "rustc-dep-of-std", feature(link_cfg, no_core))]
