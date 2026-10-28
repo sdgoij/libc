@@ -333,6 +333,8 @@ unsafe extern "C" {
     pub fn sigdelset(set: *mut sigset_t, signum: c_int) -> c_int;
     pub fn sigismember(set: *const sigset_t, signum: c_int) -> c_int;
     pub fn sigaction(signum: c_int, act: *const sigaction, oldact: *mut sigaction) -> c_int;
+    /// POSIX `signal()`: the BSD form of `sigaction` for one handler.
+    pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
     pub fn raise(sig: c_int) -> c_int;
 }
 
