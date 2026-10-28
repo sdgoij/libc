@@ -338,6 +338,47 @@ unsafe extern "C" {
     pub fn raise(sig: c_int) -> c_int;
 }
 
+// ---- locale.h ----
+
+/// `LC_CTYPE`
+pub const LC_CTYPE: c_int = 0;
+/// `LC_NUMERIC`
+pub const LC_NUMERIC: c_int = 1;
+/// `LC_TIME`
+pub const LC_TIME: c_int = 2;
+/// `LC_COLLATE`
+pub const LC_COLLATE: c_int = 3;
+/// `LC_MONETARY`
+pub const LC_MONETARY: c_int = 4;
+/// `LC_MESSAGES`
+pub const LC_MESSAGES: c_int = 5;
+/// `LC_ALL`
+pub const LC_ALL: c_int = 6;
+
+unsafe extern "C" {
+    /// POSIX `setlocale()`: the port serves the C locale only, so this reports
+    /// the current name and installs nothing.
+    pub fn setlocale(category: c_int, locale: *const c_char) -> *mut c_char;
+}
+
+// ---- sys/utsname.h ----
+
+/// `struct utsname`: six 65-byte fields. The port's `sys/utsname.h` carries a
+/// `domainname` where the BSDs do not, and PM serves the first five.
+#[repr(C)]
+pub struct utsname {
+    pub sysname: [c_char; 65],
+    pub nodename: [c_char; 65],
+    pub release: [c_char; 65],
+    pub version: [c_char; 65],
+    pub machine: [c_char; 65],
+    pub domainname: [c_char; 65],
+}
+
+unsafe extern "C" {
+    pub fn uname(buf: *mut utsname) -> c_int;
+}
+
 // ---- threads ----
 
 /// `pthread_t`

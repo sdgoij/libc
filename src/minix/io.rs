@@ -12,6 +12,11 @@ use crate::{
     pid_t, pollfd, size_t, ssize_t, timespec, uid_t, DIR,
 };
 
+/// `PATH_MAX` (`unistd.h`): the longest path the port's C library passes on.
+pub const PATH_MAX: usize = 4096;
+/// `FILENAME_MAX`: the longest a single path component may be.
+pub const FILENAME_MAX: usize = 255;
+
 /// `TIOCSCTTY` — become the controlling terminal (`_IO('t', 37)`, NetBSD's
 /// number, which the port's ioctl encoding preserves). The tty server does not
 /// act on it yet; the constant exists for the consumers that name the request.
