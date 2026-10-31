@@ -1180,12 +1180,15 @@ extern "C" {
     #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn execlp(file: *const c_char, arg0: *const c_char, ...) -> c_int;
     #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
-    pub fn execv(prog: *const c_char, argv: *const *mut c_char) -> c_int;
+    pub fn execv(prog: *const c_char, argv: *const *const c_char) -> c_int;
     #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
-    pub fn execve(prog: *const c_char, argv: *const *mut c_char, envp: *const *mut c_char)
-        -> c_int;
+    pub fn execve(
+        prog: *const c_char,
+        argv: *const *const c_char,
+        envp: *const *const c_char,
+    ) -> c_int;
     #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
-    pub fn execvp(c: *const c_char, argv: *const *mut c_char) -> c_int;
+    pub fn execvp(c: *const c_char, argv: *const *const c_char) -> c_int;
 
     #[cfg(not(any(target_os = "tvos", target_os = "watchos")))]
     pub fn fork() -> pid_t;

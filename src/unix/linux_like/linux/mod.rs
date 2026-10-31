@@ -1522,12 +1522,12 @@ pub const ETH_P_PHONET: c_int = 0x00F5;
 pub const ETH_P_IEEE802154: c_int = 0x00F6;
 pub const ETH_P_CAIF: c_int = 0x00F7;
 
-pub const POSIX_SPAWN_RESETIDS: c_short = 0x01;
-pub const POSIX_SPAWN_SETPGROUP: c_short = 0x02;
-pub const POSIX_SPAWN_SETSIGDEF: c_short = 0x04;
-pub const POSIX_SPAWN_SETSIGMASK: c_short = 0x08;
-pub const POSIX_SPAWN_SETSCHEDPARAM: c_short = 0x10;
-pub const POSIX_SPAWN_SETSCHEDULER: c_short = 0x20;
+pub const POSIX_SPAWN_RESETIDS: c_int = 0x01;
+pub const POSIX_SPAWN_SETPGROUP: c_int = 0x02;
+pub const POSIX_SPAWN_SETSIGDEF: c_int = 0x04;
+pub const POSIX_SPAWN_SETSIGMASK: c_int = 0x08;
+pub const POSIX_SPAWN_SETSCHEDPARAM: c_int = 0x10;
+pub const POSIX_SPAWN_SETSCHEDULER: c_int = 0x20;
 
 // linux/netfilter/nfnetlink.h
 pub const NFNLGRP_NONE: c_int = 0;
