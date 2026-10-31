@@ -22,6 +22,8 @@ pub const STDERR_FILENO: c_int = 2;
 
 /// `_SC_CLK_TCK`
 pub const _SC_CLK_TCK: c_int = 2;
+/// `_SC_GETPW_R_SIZE_MAX`
+pub const _SC_GETPW_R_SIZE_MAX: c_int = 69;
 /// `_SC_PAGESIZE`
 pub const _SC_PAGESIZE: c_int = 30;
 /// `_SC_HOST_NAME_MAX`
