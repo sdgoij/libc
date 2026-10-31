@@ -49,6 +49,7 @@ unsafe extern "C" {
     pub fn fork() -> pid_t;
     pub fn execvp(file: *const c_char, argv: *const *const c_char) -> c_int;
     pub fn _exit(status: c_int) -> !;
+    pub fn abort() -> !;
     pub fn waitpid(pid: pid_t, status: *mut c_int, options: c_int) -> pid_t;
     pub fn kill(pid: pid_t, sig: c_int) -> c_int;
     pub fn killpg(pgrp: pid_t, sig: c_int) -> c_int;
@@ -313,8 +314,18 @@ pub const SIGIO: c_int = 29;
 pub const SIGPWR: c_int = 30;
 
 /// Signal disposition flags. The kernel does not interpret them yet.
+pub const SA_NOCLDSTOP: c_int = 0x0000_0001;
+pub const SA_NOCLDWAIT: c_int = 0x0000_0002;
 pub const SA_SIGINFO: c_int = 0x0000_0004;
+pub const SA_ONSTACK: c_int = 0x0800_0000;
+pub const SA_RESTART: c_int = 0x1000_0000;
 pub const SA_NODEFER: c_int = 0x4000_0000;
+pub const SA_RESETHAND: c_int = 0x8000_0000u32 as c_int;
+
+/// The `sigprocmask` operations.
+pub const SIG_BLOCK: c_int = 0;
+pub const SIG_UNBLOCK: c_int = 1;
+pub const SIG_SETMASK: c_int = 2;
 
 /// `struct sigaction` (`signal.h`): the handler address, the mask, the flags,
 /// then the restorer. `minix-libc` reads the first 28 bytes.
@@ -329,6 +340,7 @@ pub struct sigaction {
 
 unsafe extern "C" {
     pub fn sigemptyset(set: *mut sigset_t) -> c_int;
+    pub fn sigfillset(set: *mut sigset_t) -> c_int;
     pub fn sigaddset(set: *mut sigset_t, signum: c_int) -> c_int;
     pub fn sigdelset(set: *mut sigset_t, signum: c_int) -> c_int;
     pub fn sigismember(set: *const sigset_t, signum: c_int) -> c_int;
@@ -336,6 +348,13 @@ unsafe extern "C" {
     /// POSIX `signal()`: the BSD form of `sigaction` for one handler.
     pub fn signal(signum: c_int, handler: sighandler_t) -> sighandler_t;
     pub fn raise(sig: c_int) -> c_int;
+    pub fn sigprocmask(how: c_int, set: *const sigset_t, oldset: *mut sigset_t) -> c_int;
+    /// POSIX's thread-aware spelling of `sigprocmask`; the port masks per
+    /// process, so the two are the same call.
+    pub fn pthread_sigmask(how: c_int, set: *const sigset_t, oldset: *mut sigset_t) -> c_int;
+    pub fn sigsuspend(mask: *const sigset_t) -> c_int;
+    pub fn sigpending(set: *mut sigset_t) -> c_int;
+    pub fn strsignal(sig: c_int) -> *mut c_char;
 }
 
 // ---- locale.h ----
