@@ -17,7 +17,7 @@ pub struct iovec {
 
 /// `struct stat` — the layout `minix-std`'s `Stat` and the VFS `fstat` reply use.
 #[repr(C)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct stat {
     pub st_dev: dev_t,
     pub st_ino: ino_t,
