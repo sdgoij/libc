@@ -74,6 +74,7 @@ unsafe extern "C" {
     pub fn chdir(path: *const c_char) -> c_int;
     pub fn fchdir(fd: c_int) -> c_int;
     pub fn getcwd(buf: *mut c_char, size: size_t) -> *mut c_char;
+    pub fn getlogin() -> *mut c_char;
     pub fn umask(mask: crate::mode_t) -> crate::mode_t;
     pub fn getsid(pid: pid_t) -> pid_t;
     pub fn getpgrp() -> pid_t;
