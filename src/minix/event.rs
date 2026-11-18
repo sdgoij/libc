@@ -97,3 +97,51 @@ unsafe extern "C" {
     pub fn eventfd_read(fd: c_int, value: *mut eventfd_t) -> c_int;
     pub fn eventfd_write(fd: c_int, value: eventfd_t) -> c_int;
 }
+
+// ---- select(2) (`sys/select.h`) ----
+
+/// `fd_set`: the port's readiness engine handles fds 0..63 as one 64-bit mask,
+/// which is what `tools/c-include/sys/select.h` declares.
+pub type fd_set = c_ulong;
+
+/// The largest descriptor an `fd_set` can name.
+pub const FD_SETSIZE: c_int = 64;
+
+unsafe extern "C" {
+    pub fn select(
+        nfds: c_int,
+        readfds: *mut fd_set,
+        writefds: *mut fd_set,
+        exceptfds: *mut fd_set,
+        timeout: *mut crate::timeval,
+    ) -> c_int;
+}
+
+/// Clear `set`. Safe for any in-range `set`; `unsafe` to match the other
+/// platforms' declaration, which the callers already sit inside.
+#[inline]
+#[allow(non_snake_case)]
+pub unsafe fn FD_ZERO(set: *mut fd_set) {
+    unsafe { *set = 0 };
+}
+
+/// Add `fd` to `set`.
+#[inline]
+#[allow(non_snake_case)]
+pub unsafe fn FD_SET(fd: c_int, set: *mut fd_set) {
+    unsafe { *set |= 1 << fd };
+}
+
+/// Drop `fd` from `set`.
+#[inline]
+#[allow(non_snake_case)]
+pub unsafe fn FD_CLR(fd: c_int, set: *mut fd_set) {
+    unsafe { *set &= !(1 << fd) };
+}
+
+/// Is `fd` marked in `set`?
+#[inline]
+#[allow(non_snake_case)]
+pub unsafe fn FD_ISSET(fd: c_int, set: *const fd_set) -> bool {
+    unsafe { *set & (1 << fd) != 0 }
+}

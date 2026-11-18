@@ -188,7 +188,8 @@ pub const POSIX_FADV_NOREUSE: c_int = 5;
 /// `PIPE_BUF`
 pub const PIPE_BUF: usize = 4096;
 
-/// `utimensat` `tv_nsec` sentinels (Linux numbering; minix has no `utimensat`).
+/// `utimensat` `tv_nsec` sentinels, `sys/sys/stat.h`'s values (`(1 << 30) - 1`
+/// and `- 2`). VFS's `do_utimens` and `minix_std::fs` use the same numbers.
 pub const UTIME_NOW: c_long = 0x3fff_ffff;
 pub const UTIME_OMIT: c_long = 0x3fff_fffe;
 

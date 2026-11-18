@@ -21,6 +21,7 @@ mod net;
 mod process;
 mod pwd;
 mod stdio;
+mod terminal;
 mod time;
 mod types;
 
@@ -34,5 +35,6 @@ pub use net::*;
 pub use process::*;
 pub use pwd::*;
 pub use stdio::*;
+pub use terminal::*;
 pub use time::*;
 pub use types::*;

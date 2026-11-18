@@ -49,6 +49,15 @@ unsafe extern "C" {
 
 unsafe extern "C" {
     pub fn fork() -> pid_t;
+    /// Replace the process image. The port's libc implements it
+    /// (`crates/minix-libc`), and `env` is the first Rust consumer.
+    pub fn execve(
+        path: *const c_char,
+        argv: *const *const c_char,
+        envp: *const *const c_char,
+    ) -> c_int;
+    /// `execve` with no environment.
+    pub fn execv(path: *const c_char, argv: *const *const c_char) -> c_int;
     pub fn execvp(file: *const c_char, argv: *const *const c_char) -> c_int;
     pub fn _exit(status: c_int) -> !;
     pub fn abort() -> !;

@@ -16,8 +16,12 @@ pub struct timespec {
 #[derive(Clone, Copy)]
 pub struct timeval {
     pub tv_sec: time_t,
-    pub tv_usec: c_long,
+    pub tv_usec: suseconds_t,
 }
+
+/// Microseconds, the type of `struct timeval::tv_usec` (a `long` in
+/// `tools/c-include/sys/time.h`).
+pub type suseconds_t = c_long;
 
 /// `struct tm`
 #[repr(C)]
@@ -49,6 +53,15 @@ unsafe extern "C" {
     pub fn clock_settime(clockid: clockid_t, tp: *const timespec) -> c_int;
     pub fn clock_getres(clockid: clockid_t, res: *mut timespec) -> c_int;
     pub fn nanosleep(req: *const timespec, rem: *mut timespec) -> c_int;
+}
+
+// ---- utimes(2) (`sys/time.h`) ----
+
+unsafe extern "C" {
+    /// Set a file's access and modification times, in microseconds.
+    pub fn utimes(path: *const c_char, times: *const timeval) -> c_int;
+    /// As `utimes`, but on the link itself when `path` names a symlink.
+    pub fn lutimes(path: *const c_char, times: *const timeval) -> c_int;
 }
 
 // ---- timerfd(3) (`sys/timerfd.h`) ----
