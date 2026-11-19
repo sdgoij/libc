@@ -396,7 +396,12 @@ unsafe extern "C" {
 
 /// `struct utsname`: six 65-byte fields. The port's `sys/utsname.h` carries a
 /// `domainname` where the BSDs do not, and PM serves the first five.
+///
+/// `Clone`, `Copy` and `Debug` are what the `s!` macro gives every other
+/// backend's `utsname`. `platform-info` (which `uname` and `arch` use) needs
+/// `Clone`.
 #[repr(C)]
+#[derive(Clone, Copy, Debug)]
 pub struct utsname {
     pub sysname: [c_char; 65],
     pub nodename: [c_char; 65],
