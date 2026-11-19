@@ -90,6 +90,7 @@ unsafe extern "C" {
     pub fn realpath(path: *const c_char, resolved: *mut c_char) -> *mut c_char;
     pub fn isatty(fd: c_int) -> c_int;
     pub fn gethostname(name: *mut c_char, len: size_t) -> c_int;
+    pub fn sethostname(name: *const c_char, len: size_t) -> c_int;
     pub fn sysconf(name: c_int) -> c_long;
     pub fn strnlen(s: *const c_char, maxlen: size_t) -> size_t;
     pub fn strlen(s: *const c_char) -> size_t;
