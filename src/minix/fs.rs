@@ -105,24 +105,29 @@ pub const DT_REG: c_uchar = 8;
 pub const DT_LNK: c_uchar = 10;
 pub const DT_SOCK: c_uchar = 12;
 
-/// `O_*` open flags. The values minix defines are the header's; the rest are
-/// given non-colliding bits, since minix's `open` ignores them.
+/// `O_*` open flags. These are the values the port's kernel and VFS implement, and the same
+/// ones `tools/c-include/fcntl.h` publishes to C and C++: a flag set here that disagrees with
+/// that header is a flag the filesystem never sees as intended (`O_APPEND` read as `O_TRUNC`,
+/// for instance). MINIX 3.3.0's own `<fcntl.h>` numbers some of them differently; the port's
+/// ABI is the one `minix_std` and `crates/servers/src/vfs/consts.rs` speak, so it wins.
 pub const O_RDONLY: c_int = 0o00;
 pub const O_WRONLY: c_int = 0o01;
 pub const O_RDWR: c_int = 0o02;
 pub const O_ACCMODE: c_int = 0o03;
-pub const O_CREAT: c_int = 0o100;
-pub const O_EXCL: c_int = 0o200;
-pub const O_NOCTTY: c_int = 0o400;
-pub const O_TRUNC: c_int = 0o1000;
-pub const O_APPEND: c_int = 0o2000;
-pub const O_NONBLOCK: c_int = 0o4000;
+pub const O_NONBLOCK: c_int = 0o4;
+pub const O_APPEND: c_int = 0o10;
+pub const O_SYNC: c_int = 0o200;
+pub const O_CREAT: c_int = 0o1000;
+pub const O_TRUNC: c_int = 0o2000;
+pub const O_EXCL: c_int = 0o4000;
+pub const O_NOCTTY: c_int = 0o100000;
+pub const O_CLOEXEC: c_int = 0o20000000;
+// The rest have no kernel meaning here (`open` ignores them); they are given distinct bits so
+// a caller that passes one is not silently asking for something else.
 pub const O_ASYNC: c_int = 0o20000;
 pub const O_DIRECT: c_int = 0o40000;
-pub const O_CLOEXEC: c_int = 0o200000;
 pub const O_DIRECTORY: c_int = 0o400000;
 pub const O_NOFOLLOW: c_int = 0o1000000;
-pub const O_SYNC: c_int = 0o2000000;
 pub const O_DSYNC: c_int = 0o4000000;
 
 /// `F_*` fcntl commands (`fcntl.h`).
