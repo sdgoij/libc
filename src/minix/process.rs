@@ -28,6 +28,10 @@ pub const _SC_GETPW_R_SIZE_MAX: c_int = 69;
 pub const _SC_PAGESIZE: c_int = 30;
 /// `_SC_HOST_NAME_MAX`
 pub const _SC_HOST_NAME_MAX: c_int = 180;
+/// `_SC_NPROCESSORS_CONF`
+pub const _SC_NPROCESSORS_CONF: c_int = 83;
+/// `_SC_NPROCESSORS_ONLN`
+pub const _SC_NPROCESSORS_ONLN: c_int = 84;
 
 /// `FIOCLEX` — close-on-exec, in minix's NetBSD-style `_IO('f', 1)` encoding.
 pub const FIOCLEX: c_ulong = 0x6601;
