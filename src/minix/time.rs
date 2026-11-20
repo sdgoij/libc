@@ -53,6 +53,9 @@ unsafe extern "C" {
     pub fn clock_settime(clockid: clockid_t, tp: *const timespec) -> c_int;
     pub fn clock_getres(clockid: clockid_t, res: *mut timespec) -> c_int;
     pub fn nanosleep(req: *const timespec, rem: *mut timespec) -> c_int;
+    /// POSIX `alarm(2)`: request `SIGALRM` after `seconds`, returning the
+    /// previous interval's remaining seconds (0 when none was armed).
+    pub fn alarm(seconds: c_uint) -> c_uint;
 }
 
 // ---- utimes(2) (`sys/time.h`) ----
