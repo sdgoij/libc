@@ -1,6 +1,6 @@
 //! The `extern "C"` declarations. The implementations are `crates/minix-libc`;
 //! these must agree with it (and with `tools/c-include/`), which is what
-//! `tools/check-c-headers.py` polices for the C side.
+//! `cargo xtask check headers` polices for the C side.
 //!
 //! `open`, `fcntl` and `ioctl` are variadic here even where `minix-libc`
 //! declares fixed arguments, because `rustix` calls them with different arity
